@@ -24,6 +24,7 @@ import DraggableLayoutR1C2 from './elements/DraggableLayoutR1C2';
 import DraggableDropdown from './elements/DraggableDropdown';
 import DraggableSlider from './elements/DraggableSlider';
 import DraggableHeader from './elements/DraggableHeader';
+import DraggableHtml from './elements/DraggableHtml';
 
 import './App.css';
 
@@ -50,6 +51,9 @@ class App extends Component {
     }, {
       type: elements.HEADER,
       component: DraggableHeader
+    },{
+      type: elements.HTML_BLOCK,
+      component: DraggableHtml
     }]);
 
     // state.clearState() triggers this event
@@ -112,6 +116,10 @@ class App extends Component {
     type: elements.HEADER,
     name: 'Header',
     id: 'h1'
+  },{
+    type: elements.HTML_BLOCK,
+    name: 'HTML',
+    id: 'hb1'
   }, {
     type: elements.GRID_LAYOUT_3_3,
     name: '3 by 3 Grid Layout',
@@ -130,17 +138,24 @@ class App extends Component {
 
     let name = data.name;
 
-    if (data.type === elements.TEXTBOX || data.type === elements.DROPDOWN) {
+    let htmlContent = data.htmlContent;
+
+    if (data.type === elements.TEXTBOX || data.type === elements.DROPDOWN || data.type === elements.HTML_BLOCK) {
       name = window.prompt('Enter name of field');
     }
 
     const id = window.prompt('Please enter unique ID');
 
+    if (data.type === elements.HTML_BLOCK) {
+      htmlContent = window.prompt('Enter html text');
+    }
+
     const result = cb({
       ...data,
       name,
       id,
-      payload: { dropped: true }
+      payload: { dropped: true },
+      htmlContent
     });
   }
 
