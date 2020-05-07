@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import {
   Row, Col, Button, Container,
-  TabContent, TabPane,
-  Nav, NavItem, NavLink
- } from 'reactstrap';
-import ReactJson from 'react-json-view';
+  Nav
+} from 'reactstrap';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 import {
@@ -16,8 +14,6 @@ import {
   Preview,
   registerPaletteElements
 } from 'react-page-maker';
-
-// import './../@types/declare_modules.d.ts';
 
 import { elements } from './const';
 import DraggableTextbox from './elements/DraggableTextbox';
@@ -53,7 +49,7 @@ class App extends Component {
     }, {
       type: elements.HEADER,
       component: DraggableHeader
-    },{
+    }, {
       type: elements.HTML_BLOCK,
       component: DraggableHtml
     }]);
@@ -75,7 +71,7 @@ class App extends Component {
   }
 
   state = {
-    activeTab: '1',
+    activeTab: '2',
     currentState: []
   }
 
@@ -94,8 +90,9 @@ class App extends Component {
     });
   }
 
-  // re-hydrate canvas state
-  initialElements = JSON.parse(localStorage.getItem('initialElements') || '{}')
+  storageData = localStorage.getItem('initialElements');
+
+  initialElements = (this.storageData !== null && this.storageData.length > 0) ? JSON.parse(this.storageData) : [];
 
   // define all palette elements that you want to show
   paletteItemsToBeRendered = [{
@@ -118,7 +115,7 @@ class App extends Component {
     type: elements.HEADER,
     name: 'Header',
     id: 'h1'
-  },{
+  }, {
     type: elements.HTML_BLOCK,
     name: 'HTML',
     id: 'hb1'
@@ -174,69 +171,36 @@ class App extends Component {
   }
 
   render() {
+
+    console.log(this.initialElements);
+
     return (
       <div className="App container">
-        <Nav tabs className="justify-content-md-center">
-          <NavItem>
-            <NavLink
-              className={`${this.state.activeTab === '1' ? 'active' : ''}`}
-              onClick={() => { this._toggleTab('1'); }}
-            >
-              Canvas
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={`${this.state.activeTab === '2' ? 'active' : ''}`}
-              onClick={() => { this._toggleTab('2'); }}
-            >
-              Preview
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={`${this.state.activeTab === '3' ? 'active' : ''}`}
-              onClick={() => { this._toggleTab('3'); }}
-            >
-              JSON
-            </NavLink>
-          </NavItem>
-        </Nav>
-        <TabContent activeTab={this.state.activeTab}>
-          <TabPane tabId="1">
-            <Row className="page-builder mt-3">
-              <Col sm="9" className="canvas-container">
-                <Canvas onDrop={this._onDrop} initialElements={this.initialElements} placeholder="Drop Here" />
-              </Col>
-              <Col sm="3">
-                <Palette paletteElements={this.paletteItemsToBeRendered} />
-                <Trash />
-                <Button color="danger" onClick={this._clearState}>Flush Canvas</Button>
-              </Col>
-              <p className="m-4"><sup>*</sup>All canvas data is getting stored in localStorage. Try refresh, canvas will get pre-populate with previous state</p>
-            </Row>
-          </TabPane>
-          <TabPane tabId="2">
-            <Row className="mt-3">
-              <Preview>
-                {
-                  ({ children }) => (
-                    <Container>
-                      {children}
-                    </Container>
-                  )
-                }
-              </Preview>
-            </Row>
-          </TabPane>
-          <TabPane tabId="3">
-            <Row className="mt-3">
-              <Col sm="12">
-                <ReactJson src={this.state.currentState} collapsed theme="solarized" />
-              </Col>
-            </Row>
-          </TabPane>
-        </TabContent>
+        {this.state.activeTab === "2" && (<Row className="mt-3">
+          <Preview>
+            {
+              ({ children }) => (
+                <Container>
+                  {children}
+                </Container>
+              )
+            }
+          </Preview>
+          <Button onClick={() => { this._toggleTab('1'); }}>Edit</Button>
+        </Row>)}
+        {this.state.activeTab === "1" && (<Row className="page-builder mt-3">
+          <Col sm="9" className="canvas-container">
+            <Canvas onDrop={this._onDrop} initialElements={this.initialElements} placeholder="Drop Here" />
+          </Col>
+          <Col sm="3">
+            <Palette paletteElements={this.paletteItemsToBeRendered} />
+            <Trash />
+            <Button color="danger" onClick={this._clearState}>Flush Canvas</Button>
+            <Button color="primary" onClick={() => { this._toggleTab('2'); }}>Save</Button>
+          </Col>
+          <p className="m-4"><sup>*</sup>All canvas data is getting stored in localStorage.
+               Try refresh, canvas will get pre-populate with previous state</p>
+        </Row>)}
       </div>
     );
   }
