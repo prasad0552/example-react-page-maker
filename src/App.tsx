@@ -92,7 +92,7 @@ class App extends Component {
 
   storageData = localStorage.getItem('initialElements');
 
-  initialElements = (this.storageData !== null && this.storageData.length > 0) ? JSON.parse(this.storageData) : [];
+  initialElements = (this.storageData !== null && this.storageData.length > 0) ? JSON.parse(this.storageData) : {};
 
   // define all palette elements that you want to show
   paletteItemsToBeRendered = [{
