@@ -17,6 +17,8 @@ import {
   registerPaletteElements
 } from 'react-page-maker';
 
+// import './../@types/declare_modules.d.ts';
+
 import { elements } from './const';
 import DraggableTextbox from './elements/DraggableTextbox';
 import DraggableLayoutR3C3 from './elements/DraggableLayoutR3C3';
@@ -93,7 +95,7 @@ class App extends Component {
   }
 
   // re-hydrate canvas state
-  initialElements = JSON.parse(localStorage.getItem('initialElements'))
+  initialElements = JSON.parse(localStorage.getItem('initialElements') || '{}')
 
   // define all palette elements that you want to show
   paletteItemsToBeRendered = [{
